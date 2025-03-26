@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>分辨下痢豬與健康豬</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    #game-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .pig {
+      width: 200px;
+      height: 200px;
+      margin: 0 10px;
+      cursor: pointer;
+      border: 5px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .pig:hover {
+      border-color: #666;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>分辨下痢豬與健康豬</h1>
+  <div id="game-container">
+    <!-- 圖片將由 JavaScript 動態生成 -->
+  </div>
+  <div id="message"></div>
+
+  <!-- 語音檔 -->
+  <audio id="correct-sound" src="correct.mp3"></audio>
+  <audio id="wrong-sound" src="wrong.mp3"></audio>
+
+  <script>
+    const pigs = [
+      { type: 'healthy', src: 'healthy_pig.jpg' },
+      { type: 'healthy', src: 'healthy_pig.jpg' },
+      { type: 'sick', src: 'sick_pig.jpg' }
+    ];
+
+    const gameContainer = document.getElementById('game-container');
+    const messageDiv = document.getElementById('message');
+    const correctSound = document.getElementById('correct-sound');
+    const wrongSound = document.getElementById('wrong-sound');
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function loadGame() {
+      shuffle(pigs);
+      gameContainer.innerHTML = '';
+      pigs.forEach((pig, index) => {
+        const img = document.createElement('img');
+        img.src = pig.src;
+        img.classList.add('pig');
+        img.dataset.type = pig.type;
+        img.addEventListener('click', handlePigClick);
+        gameContainer.appendChild(img);
+      });
+      messageDiv.textContent = '請點擊下痢豬！';
+    }
+
+    function handlePigClick(event) {
+      const selectedPig = event.target;
+      if (selectedPig.dataset.type === 'sick') {
+        messageDiv.textContent = '✅ Đúng rồi!';
+        correctSound.play();
+      } else {
+        messageDiv.textContent = '❌ Sai rồi!';
+        wrongSound.play();
+      }
+      setTimeout(loadGame, 2000);
+    }
+
+    loadGame();
+  </script>
+</body>
+</html>
